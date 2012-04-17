@@ -2,9 +2,6 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-NODE_VERSION="v0.6.15"
-node_tarball="node-$NODE_VERSION.tar.gz"
-
 # Check if user is root
 if [ $(id -u) != "0" ]; then
     echo "Error: You must be root to run this script, please use root to install lnmp"
@@ -65,7 +62,6 @@ char=`get_char`
 
 source ./install/optimize.sh
 
-echo "============================check files=================================="
 function check_file {
   if [ -s $1 ]; then
     echo "$1 [found]"
@@ -74,11 +70,6 @@ function check_file {
     wget -c "$2"
   fi
 }
-
-tarball="$node_tarball"
-check_file $tarball "http://nodejs.org/dist/$NODE_VERSION/$tarball"
-
-echo "============================check files=================================="
 
 echo "========================== nginx install ==============================="
 cd $cur_dir
@@ -95,9 +86,8 @@ cd $cur_dir
 source ./install/mongodb.sh
 echo "==================== mongodb install completed ==========================="
 
-cp conf/index.html /home/wwwroot/index.html
-
 cd $cur_dir
+cp conf/index.html /home/wwwroot/index.html
 cp lnmn /root/lnmn
 chmod +x /root/lnmn
 cp vhost.sh /root/vhost.sh
@@ -105,4 +95,4 @@ chmod +x /root/vhost.sh
 /etc/init.d/nginx start
 echo "========================== Check install ================================"
 clear
-#source ./install/check_install.sh
+source ./install/check_install.sh

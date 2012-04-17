@@ -34,15 +34,11 @@ ntpdate -u pool.ntp.org
 date
 
 #remove previous package
-dpkg -l |grep mysql
-dpkg -P libmysqlclient15off libmysqlclient15-dev mysql-common
 dpkg -l |grep apache
 dpkg -P apache2 apache2-doc apache2-mpm-prefork apache2-utils apache2.2-common
-dpkg -l |grep php
-dpkg -P php
 
 killall apache2
-apt-get remove -y apache2 apache2-doc apache2-utils apache2.2-common apache2.2-bin apache2-mpm-prefork apache2-doc apache2-mpm-worker mysql-client mysql-server mysql-common php
+apt-get remove -y apache2 apache2-doc apache2-utils apache2.2-common apache2.2-bin apache2-mpm-prefork apache2-doc apache2-mpm-worker
 
 apt-get autoremove -y
 apt-get -fy install
@@ -86,5 +82,4 @@ cat >>/etc/sysctl.conf<<EOF
 fs.file-max=65535
 EOF
 
-#install basic package
-apt-get install -y build-essential gcc g++ make autoconf automake cmake
+apt-get install -y build-essential gcc g++ make autoconf automake cmake denyhosts

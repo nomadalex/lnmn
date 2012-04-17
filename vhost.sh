@@ -15,102 +15,105 @@ echo "Thanks to lnmp ( http://www.lnmp.org/ )"
 echo ""
 echo "========================================================================="
 
-if [ "$1" != "--help" ]; then
+if [ "$1" == "--help" ]; then
+	exit
+fi
+
+domain="www.lnmp.org"
+echo "Please input domain:"
+read -p "(Default domain: www.lnmp.org):" domain
+if [ "$domain" = "" ]; then
 	domain="www.lnmp.org"
-	echo "Please input domain:"
-	read -p "(Default domain: www.lnmp.org):" domain
-	if [ "$domain" = "" ]; then
-		domain="www.lnmp.org"
-	fi
-	if [ ! -f "/usr/local/nginx/conf/vhost/$domain.conf" ]; then
+fi
+if [ ! -f "/usr/local/nginx/conf/vhost/$domain.conf" ]; then
 	echo "==========================="
 	echo "domain=$domain"
 	echo "==========================="
-	else
+else
 	echo "==========================="
 	echo "$domain is exist!"
 	echo "==========================="
-	fi
+fi
 
-	echo "Do you want to add more domain name? (y/n)"
-	read add_more_domainame
+echo "Do you want to add more domain name? (y/n)"
+read add_more_domainame
 
-	if [ "$add_more_domainame" == 'y' ]; then
+if [ "$add_more_domainame" == 'y' ]; then
 
-	  echo "Type domainname,example(bbs.vpser.net forums.vpser.net luntan.vpser.net):"
-	  read moredomain
-          echo "==========================="
-          echo domain list="$moredomain"
-          echo "==========================="
-	  moredomainame=" $moredomain"
-	fi
+	echo "Type domainname,example(bbs.vpser.net forums.vpser.net luntan.vpser.net):"
+	read moredomain
+    echo "==========================="
+    echo domain list="$moredomain"
+    echo "==========================="
+	moredomainame=" $moredomain"
+fi
 
+vhostdir="/home/wwwroot/$domain"
+echo "Please input the directory for the domain:$domain :"
+read -p "(Default directory: /home/wwwroot/$domain):" vhostdir
+if [ "$vhostdir" = "" ]; then
 	vhostdir="/home/wwwroot/$domain"
-	echo "Please input the directory for the domain:$domain :"
-	read -p "(Default directory: /home/wwwroot/$domain):" vhostdir
-	if [ "$vhostdir" = "" ]; then
-		vhostdir="/home/wwwroot/$domain"
-	fi
-	echo "==========================="
-	echo Virtual Host Directory="$vhostdir"
-	echo "==========================="
+fi
+echo "==========================="
+echo Virtual Host Directory="$vhostdir"
+echo "==========================="
 
-	echo "==========================="
-	echo "Allow Rewrite rule? (y/n)"
-	echo "==========================="
-	read allow_rewrite
+echo "==========================="
+echo "Allow Rewrite rule? (y/n)"
+echo "==========================="
+read allow_rewrite
 
-	if [ "$allow_rewrite" == 'n' ]; then
-		rewrite="none"
-	else
+if [ "$allow_rewrite" == 'n' ]; then
+	rewrite="none"
+else
+	rewrite="other"
+	echo "Please input the rewrite of programme :"
+	read -p "(Default rewrite: other):" rewrite
+	if [ "$rewrite" = "" ]; then
 		rewrite="other"
-		echo "Please input the rewrite of programme :"
-		read -p "(Default rewrite: other):" rewrite
-		if [ "$rewrite" = "" ]; then
-			rewrite="other"
-		fi
 	fi
-	echo "==========================="
-	echo You choose rewrite="$rewrite"
-	echo "==========================="
+fi
+echo "==========================="
+echo You choose rewrite="$rewrite"
+echo "==========================="
 
-	echo "==========================="
-	echo "Allow access_log? (y/n)"
-	echo "==========================="
-	read access_log
+echo "==========================="
+echo "Allow access_log? (y/n)"
+echo "==========================="
+read access_log
 
-	if [ "$access_log" == 'n' ]; then
-	  al="access_log off;"
-	else
-	  echo "Type access_log name(Default access log file:$domain.log):"
-	  read al_name
-	  if [ "$al_name" = "" ]; then
+if [ "$access_log" == 'n' ]; then
+	al="access_log off;"
+else
+	echo "Type access_log name(Default access log file:$domain.log):"
+	read al_name
+	if [ "$al_name" = "" ]; then
 		al_name="$domain"
-	  fi
-	  al="log_format  $al_name  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
+	fi
+	al="log_format  $al_name  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
              '\$status \$body_bytes_sent "\$http_referer" '
              '"\$http_user_agent" \$http_x_forwarded_for';
 		access_log  /home/wwwlogs/$al_name.log  $al_name;"
 	echo "==========================="
 	echo You access log file="$al_name.log"
 	echo "==========================="
-	fi
+fi
 
-	echo "==========================="
-	echo "Use nodejs? (y/n)"
-	echo "==========================="
-	read use_nodejs
+echo "==========================="
+echo "Use nodejs? (y/n)"
+echo "==========================="
+read use_nodejs
 
-	if [ "$use_nodejs" == "n"; then
-	  nodejs_conf=""
-	else
-	  echo "Type nodejs port:"
-	  read nodejs_port
-	  if [ "$nodejs_port" == "" ]; then
+if [ "$use_nodejs" == "n"; then
+	nodejs_conf=""
+else
+	echo "Type nodejs port:"
+	read nodejs_port
+	if [ "$nodejs_port" == "" ]; then
 		nodejs_port="88"
-	  fi
-	  echo "Your nodejs port is $nodejs_port"
-	  nodejs_conf="
+	fi
+	echo "Your nodejs port is $nodejs_port"
+	nodejs_conf="
 		location / {
 			try_files \$uri @nodejs;
 			}
@@ -121,10 +124,10 @@ if [ "$1" != "--help" ]; then
 			include proxy.conf;
 			}
 "
-	fi
+fi
 
-	get_char()
-	{
+get_char()
+{
 	SAVEDSTTY=`stty -g`
 	stty -echo
 	stty cbreak
@@ -132,10 +135,10 @@ if [ "$1" != "--help" ]; then
 	stty -raw
 	stty echo
 	stty $SAVEDSTTY
-	}
-	echo ""
-	echo "Press any key to start create virtul host..."
-	char=`get_char`
+}
+echo ""
+echo "Press any key to start create virtul host..."
+char=`get_char`
 
 
 if [ ! -d /usr/local/nginx/conf/vhost ]; then
@@ -150,7 +153,7 @@ chmod -R 755 $vhostdir
 chown -R www:www $vhostdir
 
 if [ ! -f /usr/local/nginx/conf/$rewrite.conf ]; then
-  echo "Create Virtul Host ReWrite file......"
+	echo "Create Virtul Host ReWrite file......"
 	touch /usr/local/nginx/conf/$rewrite.conf
 	echo "Create rewirte file successful,now you can add rewrite rule into /usr/local/nginx/conf/$rewrite.conf."
 else
@@ -193,7 +196,6 @@ echo "========================================================================="
 echo ""
 echo "Your domain:$domain"
 echo "Directory of $domain:$vhostdir"
-echo "Your nodejs port $port
+echo "Your nodejs port $port"
 echo ""
 echo "========================================================================="
-fi

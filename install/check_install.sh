@@ -1,28 +1,21 @@
-if [ -s /usr/local/nginx ] && [ -s /usr/local/php ] && [ -s /usr/local/mysql ]; then
+if [ -s /usr/local/nginx ] && [ -s /usr/local/node ] && [ -s /etc/init.d/mongodb ]; then
 
-echo "Install LNMP V0.8 completed! enjoy it."
+echo "Install LNMN V0.1 completed! enjoy it."
 echo "========================================================================="
-echo "LNMP V0.8 for Debian VPS , Written by Licess "
+echo "LNMN V0.1 for Debian VPS , Written by ifreedom "
 echo "========================================================================="
 echo ""
-echo "For more information please visit http://www.lnmp.org/"
-echo ""
-echo "lnmp status manage: /root/lnmp {start|stop|reload|restart|kill|status}"
-echo "default mysql root password:$mysqlrootpwd"
-echo "phpinfo : http://$domain/phpinfo.php"
-echo "phpMyAdmin : http://$domain/phpmyadmin/"
-echo "Prober : http://$domain/p.php"
+echo "lnmn status manage: /root/lnmn {start|stop|reload|restart|kill|status}"
 echo ""
 echo "The path of some dirs:"
-echo "mysql dir:   /usr/local/mysql"
-echo "php dir:     /usr/local/php"
+echo "mongodb dir:   /var/lib/mongodb"
+echo "node dir:     /usr/local/node"
 echo "nginx dir:   /usr/local/nginx"
 echo "web dir :     /home/wwwroot"
 echo ""
 echo "========================================================================="
-/root/lnmp status
+/root/lnmn status
 netstat -ntl
 else
-  echo "Sorry,Failed to install LNMP!"
-  echo "Please visit http://bbs.vpser.net/forum-25-1.html feedback errors and logs."
+  echo "Sorry,Failed to install LNMN!"
 fi

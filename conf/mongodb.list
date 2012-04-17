@@ -1,0 +1,3 @@
+# sources.list for mongodb
+
+deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen

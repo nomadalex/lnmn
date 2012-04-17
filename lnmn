@@ -1,0 +1,118 @@
+#!/bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+
+# Check if user is root
+if [ $(id -u) != "0" ]; then
+    printf "Error: You must be root to run this script!\n"
+    exit 1
+fi
+
+printf "=========================================================================\n"
+printf "Manager for LNMN V0.1  ,  Written by ifreedom \n"
+printf "=========================================================================\n"
+printf "This script is a tool to Manage status of lnmn \n"
+printf "Thanks to lnmp ( http://www.lnmp.org )\n"
+printf "\n"
+printf "Usage: /root/lnmn {start|stop|reload|restart|kill|status}\n"
+printf "=========================================================================\n"
+
+NGINXNAME=nginx
+NGINXCONFIGFILE=/usr/local/nginx/conf/$NGINXNAME.conf
+NGINXPIDFILE=/usr/local/nginx/logs/$NGINXNAME.pid
+NGINXDAEMON=/usr/local/nginx/sbin/$NGINXNAME
+
+function_start()
+{
+    printf "Starting LNMN...\n"
+    if [ -f $NGINXPIDFILE ]; then
+        printf "Nginx is runing!\n"
+        exit 1
+    else
+        $NGINXDAEMON -c $NGINXCONFIGFILE
+        printf "Nginx start successfully!\n"
+    fi
+	printf "Starting Mongodb...\n"
+	/etc/init.d/mongodb start
+}
+
+function_stop()
+{
+    printf "Stoping LNMN...\n"
+    if  [ -f $NGINXPIDFILE ]; then
+        kill `cat $NGINXPIDFILE`
+        printf "Nginx program is stop\n"
+    else
+        printf "Nginx program is not runing!\n"
+    fi
+	printf "Stoping Mongodb...\n"
+	/etc/init.d/mongodb stop
+}
+
+function_reload()
+{
+    printf "Reload LNMN...\n"
+    printf "Reload Nginx configure...\n"
+    $NGINXDAEMON -t
+    $NGINXDAEMON -s reload
+    printf "Nginx program is reloding!\n"
+	printf "Reload Mongodb...\n"
+	/etc/init.d/mongodb reload
+}
+
+function_restart()
+{
+    printf "Reload LNMN...\n"
+    printf "Reload Nginx configure...\n"
+    $NGINXDAEMON -t
+    kill `cat $NGINXPIDFILE`
+    $NGINXDAEMON -c $NGINXCONFIGFILE
+    printf "Nginx program is restarting!\n"
+	printf "Restarting Mongodb...\n"
+	/etc/init.d/mongodb restart
+}
+
+function_kill()
+{
+    kill `cat $NGINXPIDFILE`
+	killall mongod
+}
+
+function_status()
+{
+    if [ -f $NGINXPIDFILE ]; then
+      printf "Nginx is runing!\n"
+    else
+      printf "Nginx is stop!\n"
+    fi
+	if [ ! -z "`ps -A|grep mongod`" ]; then
+      printf "Mongodb is runing!\n"
+    else
+      printf "Mongodb is stop!\n"
+    fi
+}
+
+case "$1" in
+	start)
+		function_start
+		;;
+	stop)
+		function_stop
+		;;
+	restart)
+		function_stop
+		function_start
+		;;
+	reload)
+		function_reload
+		;;
+	kill)
+		function_kill
+		;;
+	status)
+		function_status
+		;;
+	*)
+		printf "Usage: /root/lnmn {start|stop|reload|restart|kill|status}\n"
+esac
+exit
